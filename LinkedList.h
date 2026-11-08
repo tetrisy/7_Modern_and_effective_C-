@@ -41,11 +41,36 @@ public:
         m_size++;
     }
 
+    void pop_front() {
+        if (m_size != 0) {
+            m_head = std::move(m_head->next);
+            m_size--;
+        }
+    }
+
     std::size_t size() const noexcept {
         return m_size;
     }
 
     bool empty() const noexcept {
         return (m_size == 0);
+    }
+
+    void clear() {
+        while (!empty()) {
+            pop_front();
+        }
+    }
+
+    T& front() {
+        return m_head->data;
+    }
+
+    const T& front() const {
+        return m_head->data;
+    }
+
+    ~LinkedList() {
+        clear();
     }
 };
