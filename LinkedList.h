@@ -24,6 +24,7 @@ private:
     std::unique_ptr<Node> m_head;
     std::size_t m_size = 0;
 public:
+    LinkedList() = default;
 
     LinkedList<T> split_when(SplitPredicate<T> condition);
 
