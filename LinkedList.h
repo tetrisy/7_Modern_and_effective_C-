@@ -40,4 +40,12 @@ public:
         m_head = std::move(newNode);
         m_size++;
     }
+
+    std::size_t size() const noexcept {
+        return m_size;
+    }
+
+    bool empty() const noexcept {
+        return (m_size == 0);
+    }
 };
