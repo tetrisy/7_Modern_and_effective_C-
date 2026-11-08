@@ -1,7 +1,9 @@
 #pragma once
 
 #include <functional>
+#include <initializer_list>
 #include <memory>
+#include <ranges>
 #include <utility>
 
 // Predicate type
@@ -25,6 +27,33 @@ private:
     std::size_t m_size = 0;
 public:
     LinkedList() = default;
+
+    LinkedList(std::initializer_list<T> init) {
+        for (const T& val : std::views::reverse(init)) {
+            push_front(val);
+        }
+    }
+
+    LinkedList(LinkedList&& other) noexcept {
+        m_head = std::move(other.m_head);
+        m_size = std::move(other.m_size);
+        other.m_size = 0;
+    }
+
+    LinkedList& operator=(LinkedList&& other) noexcept {
+        if (this != &other) {
+            clear();
+            m_head = std::move(other.m_head);
+            m_size = std::move(other.m_size);
+            other.m_size = 0;
+        }
+
+        return *this;
+    }
+
+    ~LinkedList() {
+        clear();
+    }
 
     LinkedList<T> split_when(SplitPredicate<T> condition);
 
@@ -71,7 +100,31 @@ public:
         return m_head->data;
     }
 
-    ~LinkedList() {
-        clear();
+    class Iterator {
+    private:
+        Node* m_current;
+    public:
+        Iterator(Node* node) : m_current(node) {}
+
+        T& operator*() const {
+            return m_current->data;
+        }
+
+        Iterator& operator++() {
+            m_current = m_current->next.get();
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return (m_current != other.m_current);
+        }
+    };
+
+    Iterator begin() const {
+        return Iterator(m_head.get());
+    }
+
+    Iterator end() const {
+        return Iterator(nullptr);
     }
 };
