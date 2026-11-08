@@ -27,6 +27,8 @@ private:
     std::size_t m_size = 0;
 public:
     LinkedList() = default;
+    LinkedList(const LinkedList&) = delete;
+    LinkedList& operator=(const LinkedList&) = delete;
 
     LinkedList(std::initializer_list<T> init) {
         for (const T& val : std::views::reverse(init)) {
