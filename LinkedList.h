@@ -55,7 +55,38 @@ public:
         clear();
     }
 
-    LinkedList<T> split_when(SplitPredicate<T> condition);
+    LinkedList<T> split_when(SplitPredicate<T> condition) {
+        LinkedList<T> newList;
+
+        if (!m_head) {
+            return newList;
+        }
+
+        if (condition(m_head->data)) {
+            newList.m_head = std::move(m_head);
+            newList.m_size = std::move(m_size);
+            m_size = 0;
+
+            return newList;
+        }
+
+        Node* current = m_head.get();
+        std::size_t index = 1;
+
+        while (current->next != nullptr) {
+            if (condition(current->next->data)) {
+                newList.m_head = std::move(current->next);
+                newList.m_size = m_size - index;
+                this->m_size = index;
+            }
+            else {
+                current = current->next.get();
+                index++;
+            }
+        }
+
+        return newList;
+    }
 
     void push_front(const T& value) {
         auto newNode = std::make_unique<Node>(value);
